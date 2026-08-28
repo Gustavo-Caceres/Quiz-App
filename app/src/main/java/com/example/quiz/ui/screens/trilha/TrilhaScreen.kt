@@ -8,22 +8,45 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+
+private val BackgroundColor = Color(0xFF0D1117)
+private val SurfaceColor = Color(0xFF161B22)
+private val TextMutedColor = Color(0xFF8B949E)
+
+private val CommitGraphColors = listOf(
+    Color(0xFF161B22), // nenhum commit
+    Color(0xFF0E4429),
+    Color(0xFF006D32),
+    Color(0xFF26A641),
+    Color(0xFF39D353), // muito ativo
+)
 
 @Composable
 fun TrilhaScreen(modifier: Modifier = Modifier) {
-    Column(modifier = modifier.fillMaxSize().padding(20.dp)) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(BackgroundColor)
+            .padding(20.dp),
+    ) {
         StatsBar(streakDays = 12, xp = 340)
+        Spacer(modifier = Modifier.height(20.dp))
+        UnitHeader(unitNumber = 4, progressText = "6/10", subtitle = "LAÇOS & ITERAÇÃO — JS")
     }
 }
 
@@ -43,27 +66,60 @@ private fun StatsBar(streakDays: Int, xp: Int, modifier: Modifier = Modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             CommitGraph()
             Spacer(modifier = Modifier.width(6.dp))
-            Text(text = "$streakDays")
+            Text(text = "$streakDays", color = Color.White, fontWeight = FontWeight.Bold)
         }
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(text = "$xp")
-        }
+        Text(text = "$xp", color = Color.White, fontWeight = FontWeight.Bold)
     }
 }
 
 @Composable
 private fun CommitGraph() {
     Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-        val intensities = listOf(0.2f, 0.9f, 0.4f, 1f, 0.6f)
-        intensities.forEach { intensity ->
+        val levels = listOf(1, 4, 2, 3, 4)
+        levels.forEach { level ->
             Box(
                 modifier = Modifier
                     .size(8.dp)
                     .background(
-                        color = Color(0xFF58A6FF).copy(alpha = intensity),
+                        color = CommitGraphColors[level],
                         shape = RoundedCornerShape(2.dp),
                     )
             )
+        }
+    }
+}
+
+@Composable
+private fun UnitHeader(unitNumber: Int, progressText: String, subtitle: String) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = SurfaceColor,
+        shape = RoundedCornerShape(14.dp),
+    ) {
+        Box(modifier = Modifier.padding(16.dp)) {
+            Column {
+                Text(
+                    text = "Unidade $unitNumber",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(text = subtitle, color = TextMutedColor, fontSize = 12.sp)
+            }
+
+            Surface(
+                modifier = Modifier.align(Alignment.TopEnd),
+                color = BackgroundColor,
+                shape = RoundedCornerShape(50),
+            ) {
+                Text(
+                    text = progressText,
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                    color = TextMutedColor,
+                    fontSize = 12.sp,
+                )
+            }
         }
     }
 }
