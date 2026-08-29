@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -29,12 +30,16 @@ private val SurfaceColor = Color(0xFF161B22)
 private val TextMutedColor = Color(0xFF8B949E)
 
 private val CommitGraphColors = listOf(
-    Color(0xFF161B22), // nenhum commit
+    Color(0xFF161B22),
     Color(0xFF0E4429),
     Color(0xFF006D32),
     Color(0xFF26A641),
-    Color(0xFF39D353), // muito ativo
+    Color(0xFF39D353),
 )
+
+private enum class NodeState { COMPLETED, CURRENT, LOCKED }
+
+private data class LessonNode(val label: String, val state: NodeState)
 
 @Composable
 fun TrilhaScreen(modifier: Modifier = Modifier) {
@@ -47,6 +52,8 @@ fun TrilhaScreen(modifier: Modifier = Modifier) {
         StatsBar(streakDays = 12, xp = 340)
         Spacer(modifier = Modifier.height(20.dp))
         UnitHeader(unitNumber = 4, progressText = "6/10", subtitle = "LAÇOS & ITERAÇÃO — JS")
+        Spacer(modifier = Modifier.height(20.dp))
+        LessonNodeCircle(node = LessonNode(label = "for", state = NodeState.CURRENT))
     }
 }
 
@@ -121,5 +128,32 @@ private fun UnitHeader(unitNumber: Int, progressText: String, subtitle: String) 
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun LessonNodeCircle(node: LessonNode) {
+    val background = when (node.state) {
+        NodeState.COMPLETED -> Color(0xFF3FB950)
+        NodeState.CURRENT -> Color(0xFF58A6FF)
+        NodeState.LOCKED -> SurfaceColor
+    }
+    val content = when (node.state) {
+        NodeState.COMPLETED -> "✓"
+        NodeState.CURRENT -> node.label
+        NodeState.LOCKED -> "🔒"
+    }
+
+    Box(
+        modifier = Modifier
+            .size(56.dp)
+            .background(background, CircleShape),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = content,
+            color = if (node.state == NodeState.LOCKED) TextMutedColor else Color.White,
+            fontWeight = FontWeight.Bold,
+        )
     }
 }
