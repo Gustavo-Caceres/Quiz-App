@@ -43,6 +43,15 @@ private data class LessonNode(val label: String, val state: NodeState)
 
 @Composable
 fun TrilhaScreen(modifier: Modifier = Modifier) {
+    val nodes = listOf(
+        LessonNode(label = "", state = NodeState.COMPLETED),
+        LessonNode(label = "", state = NodeState.COMPLETED),
+        LessonNode(label = "for", state = NodeState.CURRENT),
+        LessonNode(label = "", state = NodeState.LOCKED),
+        LessonNode(label = "", state = NodeState.LOCKED),
+        LessonNode(label = "", state = NodeState.LOCKED),
+    )
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -53,7 +62,7 @@ fun TrilhaScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(20.dp))
         UnitHeader(unitNumber = 4, progressText = "6/10", subtitle = "LAÇOS & ITERAÇÃO — JS")
         Spacer(modifier = Modifier.height(20.dp))
-        LessonNodeCircle(node = LessonNode(label = "for", state = NodeState.CURRENT))
+        LearningPath(nodes = nodes)
     }
 }
 
@@ -154,6 +163,49 @@ private fun LessonNodeCircle(node: LessonNode) {
             text = content,
             color = if (node.state == NodeState.LOCKED) TextMutedColor else Color.White,
             fontWeight = FontWeight.Bold,
+        )
+    }
+}
+
+@Composable
+private fun LearningPath(nodes: List<LessonNode>) {
+    Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
+        nodes.forEachIndexed { index, node ->
+            val alignment = when {
+                node.state == NodeState.CURRENT -> Alignment.Center
+                index % 2 == 0 -> Alignment.CenterEnd
+                else -> Alignment.CenterStart
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp),
+                contentAlignment = alignment,
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    LessonNodeCircle(node = node)
+                    if (node.state == NodeState.CURRENT) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        StartPill()
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun StartPill() {
+    Surface(
+        color = Color(0xFF58A6FF),
+        shape = RoundedCornerShape(50),
+    ) {
+        Text(
+            text = "COMEÇAR",
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
+            color = Color.White,
+            fontWeight = FontWeight.Bold,
+            fontSize = 12.sp,
         )
     }
 }
