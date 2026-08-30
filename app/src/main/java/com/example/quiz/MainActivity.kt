@@ -7,10 +7,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.example.quiz.ui.screens.pergunta.PerguntaScreen
+import com.example.quiz.ui.screens.trilha.TrilhaScreen
 import com.example.quiz.ui.theme.QuizTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,10 +24,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             QuizTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    QuizApp(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
@@ -31,22 +32,19 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun QuizApp(modifier: Modifier = Modifier) {
+    var mostrandoPergunta by rememberSaveable { mutableStateOf(false) }
 
-
-
-
-
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    QuizTheme {
-        Greeting("Android")
+    if (mostrandoPergunta) {
+        PerguntaScreen(
+            modifier = modifier,
+            onFechar = { mostrandoPergunta = false },
+            onConfirmar = { mostrandoPergunta = false },
+        )
+    } else {
+        TrilhaScreen(
+            modifier = modifier,
+            onComecar = { mostrandoPergunta = true },
+        )
     }
 }

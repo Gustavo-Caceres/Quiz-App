@@ -1,6 +1,7 @@
 package com.example.quiz.ui.screens.trilha
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,7 +43,7 @@ private enum class NodeState { COMPLETED, CURRENT, LOCKED }
 private data class LessonNode(val label: String, val state: NodeState)
 
 @Composable
-fun TrilhaScreen(modifier: Modifier = Modifier) {
+fun TrilhaScreen(modifier: Modifier = Modifier, onComecar: () -> Unit = {}) {
     val nodes = listOf(
         LessonNode(label = "", state = NodeState.COMPLETED),
         LessonNode(label = "", state = NodeState.COMPLETED),
@@ -62,7 +63,7 @@ fun TrilhaScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(20.dp))
         UnitHeader(unitNumber = 4, progressText = "6/10", subtitle = "LAÇOS & ITERAÇÃO — JS")
         Spacer(modifier = Modifier.height(20.dp))
-        LearningPath(nodes = nodes)
+        LearningPath(nodes = nodes, onComecar = onComecar)
     }
 }
 
@@ -168,7 +169,7 @@ private fun LessonNodeCircle(node: LessonNode) {
 }
 
 @Composable
-private fun LearningPath(nodes: List<LessonNode>) {
+private fun LearningPath(nodes: List<LessonNode>, onComecar: () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
         nodes.forEachIndexed { index, node ->
             val alignment = when {
@@ -186,7 +187,7 @@ private fun LearningPath(nodes: List<LessonNode>) {
                     LessonNodeCircle(node = node)
                     if (node.state == NodeState.CURRENT) {
                         Spacer(modifier = Modifier.height(8.dp))
-                        StartPill()
+                        StartPill(onClick = onComecar)
                     }
                 }
             }
@@ -195,8 +196,9 @@ private fun LearningPath(nodes: List<LessonNode>) {
 }
 
 @Composable
-private fun StartPill() {
+private fun StartPill(onClick: () -> Unit) {
     Surface(
+        modifier = Modifier.clickable(onClick = onClick),
         color = Color(0xFF58A6FF),
         shape = RoundedCornerShape(50),
     ) {
