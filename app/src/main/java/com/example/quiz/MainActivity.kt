@@ -8,8 +8,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import com.example.quiz.ui.screens.boasvindas.BoasVindasScreen
+import com.example.quiz.ui.screens.pergunta.PerguntaScreen
+import com.example.quiz.ui.screens.trilha.TrilhaScreen
 import com.example.quiz.ui.theme.QuizTheme
 
 class MainActivity : ComponentActivity() {
@@ -28,5 +33,18 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun QuizApp(modifier: Modifier = Modifier) {
-    BoasVindasScreen(modifier = modifier)
+    var mostrandoPergunta by rememberSaveable { mutableStateOf(false) }
+
+    if (mostrandoPergunta) {
+        PerguntaScreen(
+            modifier = modifier,
+            onFechar = { mostrandoPergunta = false },
+            onConfirmar = { mostrandoPergunta = false },
+        )
+    } else {
+        TrilhaScreen(
+            modifier = modifier,
+            onComecar = { mostrandoPergunta = true },
+        )
+    }
 }
