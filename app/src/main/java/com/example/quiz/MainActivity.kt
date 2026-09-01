@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import com.example.quiz.ui.screens.boasvindas.BoasVindasScreen
 import com.example.quiz.ui.screens.pergunta.PerguntaScreen
 import com.example.quiz.ui.screens.trilha.TrilhaScreen
 import com.example.quiz.ui.theme.QuizTheme
@@ -31,20 +32,27 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+private enum class Tela { BOAS_VINDAS, TRILHA, PERGUNTA }
+
 @Composable
 fun QuizApp(modifier: Modifier = Modifier) {
-    var mostrandoPergunta by rememberSaveable { mutableStateOf(false) }
+    var telaAtual by rememberSaveable { mutableStateOf(Tela.BOAS_VINDAS) }
 
-    if (mostrandoPergunta) {
-        PerguntaScreen(
+    when (telaAtual) {
+        Tela.BOAS_VINDAS -> BoasVindasScreen(
             modifier = modifier,
-            onFechar = { mostrandoPergunta = false },
-            onConfirmar = { mostrandoPergunta = false },
+            onContinuarComGithub = { telaAtual = Tela.TRILHA },
+            onCriarContaComEmail = { telaAtual = Tela.TRILHA },
+            onEntrar = { telaAtual = Tela.TRILHA },
         )
-    } else {
-        TrilhaScreen(
+        Tela.TRILHA -> TrilhaScreen(
             modifier = modifier,
-            onComecar = { mostrandoPergunta = true },
+            onComecar = { telaAtual = Tela.PERGUNTA },
+        )
+        Tela.PERGUNTA -> PerguntaScreen(
+            modifier = modifier,
+            onFechar = { telaAtual = Tela.TRILHA },
+            onConfirmar = { telaAtual = Tela.TRILHA },
         )
     }
 }
